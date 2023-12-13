@@ -1,0 +1,11 @@
+from requests import get  # to make GET request
+url='https://s.cafef.vn/hose/aat-cong-ty-co-phan-tap-doan-tien-son-thanh-hoa.chn'
+file_name='https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/BCTC/AAT_22Q3_BCTC.pdf'
+
+def download(url='https://s.cafef.vn/hose/aat-cong-ty-co-phan-tap-doan-tien-son-thanh-hoa.chn', file_name='https://cafef1.mediacdn.vn/Images/Uploaded/DuLieuDownload/BCTC/AAT_22Q3_BCTC.pdf'):
+    # open in binary mode
+    with open(file_name, "wb") as file:
+        # get request
+        response = get(url)
+        # write to file
+        file.write(response.content)
