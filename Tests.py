@@ -8,7 +8,6 @@ import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import webbrowser
 
 web = 'https://cafef.vn/'
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
@@ -31,12 +30,14 @@ find_BCTC_box.click()
 find_BCTC_board = driver.find_elements(By.XPATH,"//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr//td//a[@href]")
 # time.sleep(10)
 
-# links_BCTC = [td.find('a').attrs["href"] for td in find_BCTC_board]
-# print(links_BCTC)
-
 urls = WebDriverWait(driver, 20).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr//td//a[@href]")))
 for urlBCTC in urls:
-    print(urlBCTC.get_attribute("href"))
-    webbrowser.open_new_tab(urlBCTC.get_attribute("href"))
+    link_BCTC = urlBCTC.get_attribute("href")
+    #print(urlBCTC.get_attribute("href"))
+    for link in link_BCTC:
+        response = requests.get(link_BCTC)
 
+        with open("download.pdf", "wb") as pdfFile:
+            pdfFile.write(response.content)
+    
 #time.sleep(1000)
