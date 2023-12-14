@@ -33,11 +33,12 @@ find_BCTC_board = driver.find_elements(By.XPATH,"//div[@id='divDocument']//div[@
 urls = WebDriverWait(driver, 20).until(EC.visibility_of_all_elements_located((By.XPATH, "//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr//td//a[@href]")))
 for urlBCTC in urls:
     link_BCTC = urlBCTC.get_attribute("href")
-    #print(urlBCTC.get_attribute("href"))
-    for link in link_BCTC:
-        response = requests.get(link_BCTC)
+    # print(link_BCTC)
+    orginal_file_name = link_BCTC.split('/')[7]
+    print(orginal_file_name)
+    response = requests.get(link_BCTC)
 
-        with open("download.pdf", "wb") as pdfFile:
-            pdfFile.write(response.content)
+    with open(orginal_file_name, "wb") as pdfFile:
+        pdfFile.write(response.content)
     
 #time.sleep(1000)
