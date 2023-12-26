@@ -13,7 +13,7 @@ import os
 
 DF = pd.read_excel("FileBaoLoi.xlsx",sheet_name="test",usecols='A')
 numDF = len(DF.index)
-i=0
+i = int
 web = 'https://cafef.vn/'
 response = requests.get(web)
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
@@ -22,36 +22,37 @@ driver.get(web)
 driver.maximize_window()
 wait = WebDriverWait(driver, 100)
 
-def createFolder(mack):
-    path = os.getcwd()
-    isExist = os.path.exists(os.path.join(path,mack))
-    if not isExist:
-        os.makedirs(os.path.join(path,mack))
-    
-def searchMack(mack):
-    #TÌM MÃ CHỨNG KHOÁN
-    input_Ma = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//input[@id='CafeF_SearchKeyword_Company']")
-    input_Ma.send_keys(mack)
-    #BẤM NÚT "TÌM KIẾM"
-    find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//a")
-    find_button.click()
+#TÌM MÃ CHỨNG KHOÁN (HOMEPAGE)
+input_Ma_1 = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//input[@id='CafeF_SearchKeyword_Company']")
+input_Ma_1.send_keys("AAA")
 
-    get_url = driver.current_url
-    time.sleep(1000)
-    return get_url
+find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//a")
+find_button.click()
+# print(linkMack)
 
 for i in range(numDF):
     mack = DF['MACK'][i]
     # print(mack)
-
+    print(i) 
     #TẠO FOLDER TRONG VÒNG FOR
-    createFolder(mack)
+    path = os.getcwd()
+    isExist = os.path.exists(os.path.join(path,mack))
+    if not isExist:
+        os.makedirs(os.path.join(path,mack))
+
 
     #TÌM MÃ CHỨNG KHOÁN 'MACK'
-    linkMack = searchMack(mack)
-    # print(linkMack)
-
-    print(' in download file : ', linkMack)
+    input_Ma_2 = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearch']//input[@id='CafeF_SearchKeyword_Company']")
+    input_Ma_2.send_keys(mack)
+    #BẤM NÚT "TÌM KIẾM"
+    find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearch']//input[@class='s-submit']")
+    find_button.click()
+    
+     
+    #TÌM VỊ TRÍ CHỨA BCTC
+    find_BCTC_box = driver.find_element(By.XPATH,"//li[@id='liTabCongTy5CT']//a[@href]")
+    find_BCTC_box.click()
+    
     xpathLinks = (By.XPATH, "//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr//td//a[@href]")
     urls = wait.until(EC.visibility_of_all_elements_located(xpathLinks))
     print(urls)
@@ -62,5 +63,6 @@ for i in range(numDF):
         print(orginal_file_name)
         response = requests.get(link_BCTC)
 
-    with open(orginal_file_name, "wb") as pdfFile:
-        pdfFile.write(response.content)
+        with open(orginal_file_name, "wb") as pdfFile:
+            pdfFile.write(response.content)
+    i=i+1        
