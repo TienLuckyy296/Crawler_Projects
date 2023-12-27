@@ -32,14 +32,15 @@ find_button.click()
 
 for i in range(numDF):
     mack = DF['MACK'][i]
-    # print(mack)
-    print(i) 
+
     #TẠO FOLDER TRONG VÒNG FOR
     path = os.getcwd()
     isExist = os.path.exists(os.path.join(path,mack))
+    
     if not isExist:
         os.makedirs(os.path.join(path,mack))
 
+    dir_path = os.path.join(path,mack)
 
     #TÌM MÃ CHỨNG KHOÁN 'MACK'
     input_Ma_2 = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearch']//input[@id='CafeF_SearchKeyword_Company']")
@@ -55,14 +56,15 @@ for i in range(numDF):
     
     xpathLinks = (By.XPATH, "//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr//td//a[@href]")
     urls = wait.until(EC.visibility_of_all_elements_located(xpathLinks))
-    print(urls)
+
     for urlBCTC in urls:
         link_BCTC = urlBCTC.get_attribute("href")
         # print(link_BCTC)
         orginal_file_name = link_BCTC.split('/')[7]
-        print(orginal_file_name)
+        # print(orginal_file_name)
         response = requests.get(link_BCTC)
 
-        with open(orginal_file_name, "wb") as pdfFile:
+        with open(os.path.join(dir_path,orginal_file_name), "wb") as pdfFile:
             pdfFile.write(response.content)
+        driver.close()
     i=i+1        
