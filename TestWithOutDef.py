@@ -20,15 +20,7 @@ driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install())
 driver.get(web)
 # soup = BeautifulSoup(response.content,"html.parser")
 driver.maximize_window()
-wait = WebDriverWait(driver, 100)
-
-#TÌM MÃ CHỨNG KHOÁN (HOMEPAGE)
-input_Ma_1 = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//input[@id='CafeF_SearchKeyword_Company']")
-input_Ma_1.send_keys("AAA")
-
-find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//a")
-find_button.click()
-# print(linkMack)
+wait = WebDriverWait(driver, 1000)
 
 for i in range(numDF):
     mack = DF['MACK'][i]
@@ -43,13 +35,13 @@ for i in range(numDF):
     dir_path = os.path.join(path,mack)
 
     #TÌM MÃ CHỨNG KHOÁN 'MACK'
-    input_Ma_2 = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearch']//input[@id='CafeF_SearchKeyword_Company']")
-    input_Ma_2.send_keys(mack)
+    input_Ma = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//input[@id='CafeF_SearchKeyword_Company']")
+    input_Ma.send_keys(mack)
+
     #BẤM NÚT "TÌM KIẾM"
-    find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearch']//input[@class='s-submit']")
+    find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//a")
     find_button.click()
     
-     
     #TÌM VỊ TRÍ CHỨA BCTC
     find_BCTC_box = driver.find_element(By.XPATH,"//li[@id='liTabCongTy5CT']//a[@href]")
     find_BCTC_box.click()
@@ -61,10 +53,12 @@ for i in range(numDF):
         link_BCTC = urlBCTC.get_attribute("href")
         # print(link_BCTC)
         orginal_file_name = link_BCTC.split('/')[7]
-        # print(orginal_file_name)
+        print('downloaded : ',orginal_file_name)
         response = requests.get(link_BCTC)
 
         with open(os.path.join(dir_path,orginal_file_name), "wb") as pdfFile:
             pdfFile.write(response.content)
-        driver.close()
-    i=i+1        
+    
+    # RETURN_TO_HOMEPAGE
+    home_button = driver.find_element(By.XPATH,"//div[@class='menucategory clearfix menufooter']//li[@class='bt_home active']//a[@href]")
+    home_button.click()        
