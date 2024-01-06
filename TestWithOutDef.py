@@ -5,7 +5,6 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 import time 
 import requests
-# from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
@@ -18,7 +17,7 @@ web = 'https://cafef.vn/'
 response = requests.get(web)
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 driver.get(web)
-# soup = BeautifulSoup(response.content,"html.parser")
+
 driver.maximize_window()
 wait = WebDriverWait(driver, 1000)
 
@@ -39,14 +38,14 @@ for i in range(numDF):
     input_Ma.send_keys(mack)
 
     #BẤM NÚT "TÌM KIẾM"
-    find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//a")
+    find_button = driver.find_element(By.XPATH,"//div[@id='CafeF_BoxSearchNew']//a[@class='bt_search sprite s-submit']")
     find_button.click()
     
     #TÌM VỊ TRÍ CHỨA BCTC
-    find_BCTC_box = driver.find_element(By.XPATH,"//li[@id='liTabCongTy5CT']//a[@href]")
+    find_BCTC_box = driver.find_element(By.XPATH,"//li[@id='liTabCongTy5CT']//a")
     find_BCTC_box.click()
     
-    xpathLinks = (By.XPATH, "//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr//td//a[@href]")
+    xpathLinks = (By.XPATH, "//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr//td//a")
     urls = wait.until(EC.visibility_of_all_elements_located(xpathLinks))
 
     for urlBCTC in urls:
@@ -58,7 +57,7 @@ for i in range(numDF):
 
         with open(os.path.join(dir_path,orginal_file_name), "wb") as pdfFile:
             pdfFile.write(response.content)
-    
+        
     # RETURN_TO_HOMEPAGE
-    home_button = driver.find_element(By.XPATH,"//div[@class='menucategory clearfix menufooter']//li[@class='bt_home active']//a[@href]")
+    home_button = driver.find_element(By.XPATH,"//div[@id='menu_wrap']//li[@class='bt_home active']//a")
     home_button.click()        
