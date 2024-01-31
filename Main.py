@@ -49,14 +49,15 @@ def findFiles():
 
 def nameCut():
     for urlBCTC in findFiles():
-        link_BCTC = urlBCTC.get_attribute("href")
-        # print(link_BCTC)
-        orginal_file_name = link_BCTC.split('/')[7]
-        print(orginal_file_name)
-        response = requests.get(link_BCTC)
+        print('urlBCTC ============= ',urlBCTC)
+        # link_BCTC = urlBCTC.get_attribute("href")
+        orginal_file_name_2 = driver.find_element(By.XPATH,"//div[@id='divDocument']//div[@class='treeview']//table//tbody//tr[position()>1]//td[1]//text()")
+        # orginal_file_name_1 = link_BCTC.split('/')[7]
+        print('orginal_file_name_2 : ',orginal_file_name_2)
+        response = requests.get(orginal_file_name_2)
 
-        with open(os.path.join(createFolder(mack),orginal_file_name), "wb") as pdfFile:
-                pdfFile.write(response.content)
+        with open(os.path.join(createFolder(mack),orginal_file_name_2), "wb") as pdfFile:
+            pdfFile.write(response.content)
 
 def return_to_Homepage():
     home_button = driver.find_element(By.XPATH,"//div[@id='menu_wrap']//li[@class='bt_home active']//a")
